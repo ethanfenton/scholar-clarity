@@ -20,10 +20,37 @@
     );
   }
 
-  // Strip trailing volume/issue: "Cell 155 (7)" → "Cell"
-  function normalizeJournal(raw) {
-    if (!raw) return '';
-    return raw.replace(/\s+\d+(\s*\(\d+\))?$/, '').trim();
+  // Normalize journal/venue string to a groupable label.
+  // Receives the full second .gs_gray text (before any comma-split) so that
+  // patent application numbers like "17/611,234" aren't truncated at the comma.
+  function normalizeJournal(full) {
+    if (!full) return '';
+    const t = full.trim();
+
+    // PCT / WIPO applications: "WO 2021/123456 A1, ..."
+    if (/^WO[\s\/]\d/i.test(t)) return 'PCT Patent Application';
+
+    // Patent applications (any country): "US Patent App. 17/611,234"
+    // The word "App." distinguishes pending from granted.
+    if (/patent\s+app/i.test(t)) {
+      const country = t.match(/^([A-Z]{2,3})\b/)?.[1];
+      return (country ? country + ' ' : '') + 'Patent Application';
+    }
+
+    // Granted patents: "US Patent 9,123,456" or "US Patent No. ..."
+    if (/\bpatent\b/i.test(t)) {
+      const country = t.match(/^([A-Z]{2,3})\b/)?.[1];
+      return (country ? country + ' ' : '') + 'Patent (Granted)';
+    }
+
+    // Google Patents catch-all (granted, no country prefix visible)
+    if (/google patents/i.test(t)) return 'Patent (Granted)';
+
+    // Regular journals: split on first comma then strip trailing volume/issue
+    // e.g. "Nature, 534 (7608), 56–59, 2016" → "Nature"
+    // e.g. "Cell 155 (7), 1701–1714"         → "Cell"
+    const beforeComma = t.split(',')[0].trim();
+    return beforeComma.replace(/\s+\d+(\s*\(\d+\))?$/, '').trim();
   }
 
   // Normalize to "first-initial last" for co-author grouping
@@ -83,17 +110,17 @@
     const yearEl = row.querySelector('.gsc_a_y span');
     const year   = yearEl ? (parseInt(yearEl.textContent) || 0) : 0;
 
-    const rawJournal  = journalText.split(',')[0].trim();
-    const journalName = normalizeJournal(rawJournal);
+    // Pass full journalText so patent app numbers (which contain commas) aren't truncated
+    const journalName = normalizeJournal(journalText);
 
     const titleEl = row.querySelector('.gsc_a_at');
     const title   = titleEl ? titleEl.textContent.trim() : '';
 
     // Type flags — priority: patent > preprint > review > primary
-    const isPatent   = /\bpatent\b|google patents/i.test(rawJournal) ||
-                       /\bpatent\b/i.test(journalText);
+    // Derive from the already-normalized name so detection is consistent with display
+    const isPatent   = /patent/i.test(journalName);
     const isPreprint = !isPatent &&
-                       /biorxiv|medrxiv|arxiv|chemrxiv|ssrn|preprint/i.test(rawJournal);
+                       /biorxiv|medrxiv|arxiv|chemrxiv|ssrn|preprint/i.test(journalText);
     const isReview   = !isPatent && !isPreprint && (
       /\breview\b|\bmeta.?analy|\bsystematic.+review\b|\boverview\b|\bsurvey of\b/i.test(title) ||
       /\breview[s]?\b|annual review|current opinion|trends in/i.test(journalName)
