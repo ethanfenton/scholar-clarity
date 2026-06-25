@@ -1,45 +1,86 @@
-# Scholar Author Filter
+# Scholar Clarity
 
-A Chrome extension that supercharges Google Scholar author profile pages with authorship filters, live stats, and publication analytics.
+A Chrome extension that adds authorship filters, live publication stats, and analytics charts to Google Scholar author profile pages — so you can instantly see a researcher's output as first author, senior author, or any role you care about.
+
+---
 
 ## Features
 
-- **Authorship filters** — filter papers by 1st author, senior/last author, or middle author (multi-select)
-- **Type filters** — filter by Primary article, Review, Preprint, or Patent (multi-select)
-- **Auto-loads all papers** — clicks "Show more" automatically so stats cover the full publication list
-- **Live filtered stats** — recalculates total citations, h-index, and i10-index for whatever is visible
-- **Six analytics charts:**
-  - Authorship position from front (1st, 2nd, 3rd–5th, …)
-  - Authorship position from back (Last/Senior, 2nd-to-last, …)
-  - Top journals / venues
-  - Papers per year
-  - Citations by publication year
-  - Frequent co-authors
+| | |
+|---|---|
+| **Authorship filters** | Filter by 1st Author, Senior/Last, or Middle (multi-select, OR logic) |
+| **Type filters** | Filter by Primary article, Review, Preprint, or Patent (multi-select, OR logic) |
+| **Auto-loads all papers** | Automatically clicks "Show more" until the full publication list is visible |
+| **Live filtered stats** | Total citations, h-index, and i10-index recalculated for the visible set |
+| **6 analytics charts** | Position from front · Position from back · Top journals · Papers per year · Citations by pub. year · Frequent co-authors |
 
-All filters combine: e.g. "Senior/Last + Primary only" works together and updates every chart.
+Filters combine across dimensions: e.g. **Senior/Last + Primary** shows only senior-authored primary research articles, with all charts and stats updating instantly.
 
-## Install (Chrome / Edge)
+---
 
-1. [Download the ZIP](../../archive/refs/heads/main.zip) and unzip it  
-   — or clone: `git clone https://github.com/YOUR_USERNAME/scholar-author-filter.git`
-2. Open **chrome://extensions** in Chrome (or **edge://extensions** in Edge)
-3. Enable **Developer mode** (toggle, top-right)
-4. Click **Load unpacked** and select the unzipped folder
-5. Navigate to any Google Scholar author profile page — the filter bar appears automatically
+## Install
+
+> No account or sign-in needed. Works in Chrome and any Chromium-based browser (Edge, Brave, Arc).
+
+1. **[Download the ZIP](https://github.com/ethanfenton/scholar-clarity/archive/refs/heads/main.zip)** and unzip it
+2. Open **`chrome://extensions`** in your browser
+3. Enable **Developer mode** (toggle, top-right corner)
+4. Click **Load unpacked** and select the unzipped `scholar-clarity-main` folder
+5. Navigate to any Google Scholar author profile — the filter bar appears automatically
+
+> **Tip:** The extension only activates on `scholar.google.com/citations*` pages (author profiles). It does not run anywhere else.
+
+---
 
 ## Usage
 
-Go to a Google Scholar author profile (`scholar.google.com/citations?user=...`).
+Go to a Google Scholar author profile, e.g. `https://scholar.google.com/citations?user=...`
 
-- Click any chip to activate it (blue = active). Click again to deactivate.
-- **Authorship** chips are OR-combined: selecting `1st Author` + `Senior / Last` shows papers in either role.
-- **Type** chips are OR-combined: selecting `Primary` + `Review` shows everything except preprints and patents.
-- The two groups combine as AND: e.g. `Senior / Last` + `Primary` = senior-authored primary articles only.
-- Click **Hide charts** to collapse the analytics panel.
+The extension adds three panels above the publication list:
+
+### Filter bar
+Click any chip to activate it (blue = active, click again to deactivate):
+
+- **Authorship:** `1st Author` · `Senior / Last` · `Middle`
+- **Type:** `Primary` · `Review` · `Preprint` · `Patent`
+
+Within each group, multiple selections are OR'd. Across groups, they are AND'd.
+
+### Stats bar
+Shows paper count, total citations, h-index, and i10-index computed only from the currently visible (filtered) papers.
+
+### Charts
+Six bar charts update live with the active filters:
+- **Position from front** — how often this author appears as 1st, 2nd, 3rd–5th, etc.
+- **Position from back** — how often they appear as last (senior), 2nd-to-last, etc.
+- **Top journals / venues** — most frequent publication venues
+- **Papers per year** — publication volume over time
+- **Citations by publication year** — which cohort of papers drives the most citations
+- **Frequent co-authors** — top collaborators by paper count
+
+Click **Hide charts** to collapse the panel.
+
+---
 
 ## Notes
 
-- **Review detection is a heuristic** — it checks title keywords ("review", "meta-analysis", "systematic review") and journal names ("Annual Review of…", "Current Opinion in…"). It won't catch everything.
+- **Review detection is a heuristic** — checks title keywords (*review*, *meta-analysis*, *systematic review*, *overview*) and journal names (*Annual Review of…*, *Current Opinion in…*, *Trends in…*). Won't catch everything.
 - **Preprint detection** looks for bioRxiv, medRxiv, arXiv, chemRxiv, SSRN in the venue field.
-- **Co-author grouping** normalizes names to first-initial + last-name, so "J. Smith" and "John Smith" are counted together (may occasionally over-merge common names).
-- **Truncated author lists** — Scholar sometimes shows "…" for very long author lists. Papers where the author's position can't be determined appear in "All" but not in specific authorship filters.
+- **Patent detection** looks for "patent" or "Google Patents" in the venue field.
+- **Co-author grouping** normalizes to first-initial + last-name, so "J. Smith" and "John Smith" are counted together. May occasionally merge distinct people with similar names.
+- **Truncated author lists** — Scholar sometimes shows "…" for very long author lists. These papers appear under **All** but their authorship position can't be determined, so they're excluded from specific authorship filters.
+
+---
+
+## Contributing
+
+Pull requests welcome. The entire extension is a single content script (`content.js`) with no build step or dependencies.
+
+```
+scholar-clarity/
+├── manifest.json   # Chrome extension manifest (MV3)
+├── content.js      # All logic — parsing, filtering, stats, charts
+├── icon16.png
+├── icon48.png
+└── icon128.png
+```
