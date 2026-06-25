@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <rect width="128" height="128" rx="16" fill="#1a73e8"/>
+  <!-- Graduation cap -->
+  <polygon points="64,28 100,46 64,64 28,46" fill="#fff"/>
+  <rect x="94" y="46" width="4" height="20" rx="2" fill="#fff"/>
+  <ellipse cx="96" cy="68" rx="6" ry="4" fill="#fff"/>
+  <!-- Filter bars -->
+  <rect x="28" y="78" width="52" height="6" rx="3" fill="#fff" opacity="0.9"/>
+  <rect x="28" y="90" width="36" height="6" rx="3" fill="#fff" opacity="0.7"/>
+  <rect x="28" y="102" width="20" height="6" rx="3" fill="#fff" opacity="0.5"/>
+</svg>

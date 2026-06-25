@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "Scholar Author Filter",
+  "version": "1.0",
+  "description": "Filter Google Scholar author profiles by authorship position, article type, and more. Live stats and analytics charts update with every filter.",
+  "icons": {
+    "16":  "icon16.png",
+    "48":  "icon48.png",
+    "128": "icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://scholar.google.com/citations*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
