@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Scholar Clarity",
   "version": "1.0",
-  "description": "Filter Google Scholar author profiles by authorship position and article type. Live recalculated stats and analytics charts update with every filter.",
+  "description": "Filter Google Scholar profiles by authorship position and article type. Stats and charts update live with every filter.",
   "icons": {
     "16":  "icon16.png",
     "48":  "icon48.png",
